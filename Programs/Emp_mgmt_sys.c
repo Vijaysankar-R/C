@@ -31,9 +31,9 @@ int main()
     printf("Enter Employee id:");
     scanf("%d",&emp[i].id);
     printf("Enter Employee name:");
-    scanf("%49s",emp[i].name);
+    scanf(" %49[^\n]",emp[i].name);
     printf("Enter Employee dept:");
-    scanf("%49s",emp[i].dept);    
+    scanf(" %49[^\n]",emp[i].dept);    
     printf("Enter Employee Salary:");
     scanf("%lf",&emp[i].salary);
   }
@@ -81,9 +81,9 @@ employee* addmore(employee *emp, int *num1,int newcount)
     printf("Enter Employee id:");
     scanf("%d",&emp[i].id);
     printf("Enter Employee name:");
-    scanf("%49s",emp[i].name);
+    scanf(" %49[^\n]",emp[i].name);
     printf("Enter Employee dept:");
-    scanf("%49s",emp[i].dept);    
+    scanf(" %49[^\n]",emp[i].dept);    
     printf("Enter Employee Salary:");
     scanf("%lf",&emp[i].salary);
   }
