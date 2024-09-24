@@ -4,77 +4,119 @@ typedef struct Employee
 {
   int id;
   char *name;
-}employee_t;
-void getdata(employee_t *,int);
-employee_t* add(employee_t **,int *);
-void freemem(employee_t *,int num);
+  char *dept;
+  double salary;
+}employee;
+void getdata(employee *,int);
+void search(employee *,int,int);
+void addmore(employee **, int *, int);
 int main()
 {
-  int num;
-  int option;
-  employee_t *emp;
-  printf("Enter Employees:");
-  scanf("%d",&num);
-  emp=(employee_t *)malloc(num*sizeof(employee_t));
-  for(int i=0;i<num;i++)
+  employee *emp;
+  int num1=0;
+  int newcount=0;
+  int id=0;
+  int option=0;
+  printf("Enter Number of Employees to store the data:");
+  scanf("%d",&num1);
+  emp=(employee *)malloc(num1*sizeof(employee));
+  if(emp==NULL)
+  {
+    printf("Memory Allocation Failed");
+  }
+  for(int i=0;i<num1;i++)
   {
     emp[i].name=(char *)malloc(50*sizeof(char));
-    printf("Enter Employee %d ID:",i+1);
+    emp[i].dept=(char *)malloc(50*sizeof(char));
+    printf("Enter Employee id:");
     scanf("%d",&emp[i].id);
-    printf("Enter Employee %d Name:",i+1);
+    printf("Enter Employee name:");
     scanf(" %49[^\n]",emp[i].name);
+    printf("Enter Employee dept:");
+    scanf(" %49[^\n]",emp[i].dept);    
+    printf("Enter Employee Salary:");
+    scanf("%lf",&emp[i].salary);
   }
   while(1)
   {
-    printf("\n1.Add More 2.Display :\n");
+    printf("MENU 1.Addmore Employees 2.Display All Employees 3.Search by ID 4.exit:");
     scanf("%d",&option);
     switch(option)
     {
       case 1:
-      emp=add(&emp,&num);
+      printf("Enter the no of new employees to add:");
+      scanf("%d",&newcount);
+      addmore(&emp, &num1, newcount);
       break;
       case 2:
-      getdata(emp,num);
+      getdata(emp,num1);
       break;
-      default:
+      case 3:
+      printf("Enter ID to Search:");
+      scanf("%d",&id);
+      search(emp,id,num1);
+      break;
+      case 4:
+      for (int i = 0; i < num1; i++) 
+      {
+        free(emp[i].name);
+        free(emp[i].dept);
+      }
+      free(emp);
       return 0;
+      default:
+      printf("Invalid Option !!!");
+      return 0;
+  }
+  }
+}
+void addmore(employee **emp, int *num1,int newcount)
+{
+  *emp = realloc(*emp, (*num1 + newcount) * sizeof(employee));
+  for(int i=*num1;i<*num1+newcount;i++)
+  {
+    (*emp)[i].name=(char *)malloc(50*sizeof(char));
+    (*emp)[i].dept=(char *)malloc(50*sizeof(char));
+    printf("Enter Employee id:");
+    scanf("%d",&(*emp)[i].id);
+    printf("Enter Employee name:");
+    scanf(" %49[^\n]",(*emp)[i].name);
+    printf("Enter Employee dept:");
+    scanf(" %49[^\n]",(*emp)[i].dept);    
+    printf("Enter Employee Salary:");
+    scanf("%lf",&(*emp)[i].salary);
+  }
+  *num1 += newcount;
+}
+void search(employee *emp,int id,int num1)
+{
+  int found=0;
+  for(int i=0;i<num1;i++)
+  {
+    if(id==emp[i].id)
+    {
+      found=1;
+      printf("************Match Found**************\n");
+      printf("Employee id: %d\n",emp[i].id);
+      printf("Employee name: %s\n",emp[i].name);
+      printf("Employee dept: %s\n",emp[i].dept);
+      printf("Employee Salary: %lf\n",emp[i].salary);
       break;
     }
   }
-  freemem(emp,num);
-  return 0;
+  if(!found)
+    {
+      printf("\n!!!!!!!!!!!!No Match Found!!!!!!!!!!!!!\n");
+    }
 }
-employee_t* add(employee_t **emp,int *num)
+void getdata(employee *emp,int num1)
 {
-  int num2;
-  printf("Enter no of new emp to add:");
-  scanf("%d",&num2);
-  *emp=realloc(emp,(*num+num2)*sizeof(employee_t));
-  for(int i=*num;i<*num+num2;i++)
+  for(int i=0;i<num1;i++)
   {
-    emp[i]->name=(char *)malloc(50*sizeof(char));
-    printf("Enter Employee %d ID:",i+1);
-    scanf("%d",&emp[i]->id);
-    printf("Enter Employee %d Name:",i+1);
-    scanf(" %49[^\n]",emp[i]->name);
+    printf("\n=================================================================================\n");
+    printf("Employee id: %d\n",emp[i].id);
+    printf("Employee name: %s\n",emp[i].name);
+    printf("Employee dept: %s\n",emp[i].dept);
+    printf("Employee Salary: %lf\n",emp[i].salary);
   }
-  *num+=num2;
-}
-void getdata(employee_t *emp,int num)
-{
-  for(int i=0;i<num;i++)
-  {
-    printf("\n======================================================================\n");
-    printf("Employee Id:%d\n",emp[i].id);
-    printf("Employee name:%s",emp[i].name);
-    printf("\n======================================================================\n");
-  }
-}
-void freemem(employee_t *emp,int num)
-{
-  for(int i=0;i<num;i++)
-  {
-    free(emp[i].name);
-  }
-  free(emp);
 }
