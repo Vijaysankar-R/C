@@ -7,21 +7,22 @@ typedef struct NODE
 }node_t;
 void create(node_t *,int);
 void addFront(node_t **);
-int display(node_t *);
 void addBack(node_t *);
+int display(node_t *);
+int insert(node_t **);
 int main()
 {
     int num,option;
     node_t *root=NULL;
     while(1)
     {
-    printf("1.Create 2.Add Front 3.Add Back 4.Display 5.Exit:");
+    printf("1.Create 2.Add Front 3.Add Back 4.Display 5.Insert by Position 6.Exit:");
     scanf("%d",&option);
     switch(option)
     {
         case 1:
         root=(node_t*)malloc(sizeof(node_t));
-        printf("Enter Element No:");
+        printf("Enter Element No(Min 02):");
         scanf("%d",&num);
         printf("Enter Element 1:");
         scanf("%d",&root->data);
@@ -38,6 +39,9 @@ int main()
         display(root);
         break;
         case 5:
+        insert(&root);
+        break;
+        case 6:
         return 0;
         default:
         return 0;
@@ -65,19 +69,21 @@ void create(node_t *root,int num)
 }
 int display(node_t *root)
 {
+    int count=0;
     if(root==NULL)
     {
         printf("List is Empty\n");
-        return 1;
+        return count;
     }
     node_t *temp=root;
     while(temp!=NULL)
     {
         printf("%d->",temp->data);
         temp=temp->link;
+        count++;
     }
     printf("NULL\n");
-    return 0;
+    return count;
 }
 void addBack(node_t *root)
 {
@@ -99,4 +105,47 @@ void addFront(node_t **root)
     scanf("%d",&node->data);
     node->link=*root;
     *root=node;
+}
+int insert(node_t **root)
+{
+    int count=display(*root);
+    int pos,i;
+    int element;
+    if(count==0)
+    {
+        return 0;
+    }
+    printf("Enter Position to insert(index from 1):");
+    scanf("%d",&pos);
+    if(pos>count+1)
+    {
+        printf("Enter Valid Position\n");
+    }
+    else
+    {
+        if(pos==1)
+        {
+            addFront(root);
+        }
+        else if(pos==count+1)
+        {
+            addBack(*root);
+        }
+        else
+        {
+            printf("Enter Element to insert at %d Position:",pos);
+            scanf("%d",&element);
+            node_t *node=(node_t *)malloc(sizeof(node_t));
+            node->data=element;
+            node->link=NULL;
+            node_t *temp=*root;
+            for(i=1;i<pos-1;i++)
+            {
+                temp=temp->link;
+            }
+            node->link=temp->link;
+            temp->link=node;
+        }
+    }   
+    return 0;
 }
