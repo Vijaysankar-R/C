@@ -6,17 +6,21 @@ typedef struct NODE
     struct NODE *link; 
 }node_t;
 void create(node_t *,int);
-void addFront(node_t **);
-void addBack(node_t *);
+int addFront(node_t **);
+int addBack(node_t **);
 int display(node_t *);
 int insert(node_t **);
+int delFront(node_t **);
+int delBack(node_t **);
+int delByPos(node_t **);
+int search(node_t *);
 int main()
 {
     int num,option;
     node_t *root=NULL;
     while(1)
     {
-    printf("1.Create 2.Add Front 3.Add Back 4.Display 5.Insert by Position 6.Exit:");
+    printf("1.Create 2.Add Front 3.Add Back 4.Display 5.Insert by Position 6.Del Front 7.Del Back 8.Del by Position 9.Search 10.Exit:");
     scanf("%d",&option);
     switch(option)
     {
@@ -33,7 +37,7 @@ int main()
         addFront(&root);
         break;
         case 3:
-        addBack(root);
+        addBack(&root);
         break;
         case 4:
         display(root);
@@ -42,7 +46,20 @@ int main()
         insert(&root);
         break;
         case 6:
+        delFront(&root);
+        break;
+        case 7:
+        delBack(&root);
+        break;
+        case 8:
+        delByPos(&root);
+        break;
+        case 9:
+        search(root);
+        break;
+        case 10:
         return 0;
+        break;
         default:
         return 0;
     }
@@ -85,26 +102,38 @@ int display(node_t *root)
     printf("NULL\n");
     return count;
 }
-void addBack(node_t *root)
+int addBack(node_t **root)
 {
     node_t *node=(node_t *)malloc(sizeof(node_t));
     printf("Enter Element to Add End of the List:");
     scanf("%d",&node->data);
     node->link=NULL;
-    node_t *temp=root;
+    if(*root==NULL)
+    {
+      *root=node;
+      return 1;
+    }
+    node_t *temp=*root;
     while(temp->link!=NULL)
     {
         temp=temp->link;
     }
     temp->link=node;
+    return 0;
 }
-void addFront(node_t **root)
+int addFront(node_t **root)
 {
-    node_t *node=(node_t *)malloc(sizeof(node_t));
-    printf("Enter the Element to Add Begining of the List:");
-    scanf("%d",&node->data);
-    node->link=*root;
+  node_t *node=(node_t *)malloc(sizeof(node_t));
+  printf("Enter the Element to Add Begining of the List:");
+  scanf("%d",&node->data);
+  if(*root==NULL)
+  {
     *root=node;
+    return 1;
+  }
+  node->link=*root;
+  *root=node;
+  return 0;
 }
 int insert(node_t **root)
 {
@@ -117,7 +146,7 @@ int insert(node_t **root)
     }
     printf("Enter Position to insert(index from 1):");
     scanf("%d",&pos);
-    if(pos>count+1)
+    if(pos>count+1||pos<1)
     {
         printf("Enter Valid Position\n");
     }
@@ -129,7 +158,7 @@ int insert(node_t **root)
         }
         else if(pos==count+1)
         {
-            addBack(*root);
+            addBack(root);
         }
         else
         {
@@ -148,4 +177,111 @@ int insert(node_t **root)
         }
     }   
     return 0;
+}
+int delFront(node_t **root)
+{
+  if(*root==NULL)
+  {
+    printf("List is Empty\n");
+    return 1;
+  }
+  node_t *temp=*root;
+  *root=(*root)->link;
+  free(temp);
+  temp=NULL;
+  return 0;
+}
+int delBack(node_t **root)
+{
+  if(*root==NULL)
+  {
+    printf("List is Empty\n");
+    return 1;
+  }
+  else if((*root)->link==NULL)
+  {
+    free(*root);
+    *root=NULL;
+    return 1;
+  }
+  else
+  {
+  node_t *temp=*root;
+  node_t *temp2=NULL;
+  while(temp->link!=NULL)
+  {
+    temp2=temp;
+    temp=temp->link;
+  }
+  temp2->link=NULL;
+  free(temp);
+  temp=NULL;
+  }
+  return 0;
+}
+int search(node_t *root)
+{
+  if(root==NULL)
+  {
+    printf("List is Empty\n");
+    return 1;
+  }
+  int element;
+  int found=0;
+  printf("Enter Element to Search in the List:");
+  scanf("%d",&element);
+  node_t *temp=root;
+  while(temp!=NULL)
+  {
+    if(temp->data==element)
+    {
+      printf("Element Found\n");
+      found=1;
+      break;
+    }
+    temp=temp->link;
+  }
+  if(!found)
+  {
+    printf("Element Not Found\n");
+  }
+  return 0;
+}
+int delByPos(node_t **root)
+{
+  int i,pos,count=display(*root);
+  if(*root==NULL)
+  {
+    printf("List is Empty\n");
+    return 1;
+  }
+  printf("Enter the Postion to Delete:");
+  scanf("%d",&pos);
+  if(pos>count||pos<1)
+  {
+    printf("Enter Valid Position !\n");
+    return 1;
+  }
+  else if(pos==count&&pos!=1)
+  {
+    delBack(root);
+  }
+  else if(pos==1)
+  {
+    delFront(root);
+  }
+  else
+  {
+    node_t *node=*root;
+    node_t *pnode=NULL;
+    for(i=1;i<pos;i++)
+    { 
+      pnode=node;
+      node=node->link;
+    }
+    pnode->link=node->link;
+    free(node);
+    node=NULL;
+  }
+  return 0;
 }
